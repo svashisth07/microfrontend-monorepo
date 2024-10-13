@@ -11,7 +11,7 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/apps/host",
+        "outputPath": "dist/apps/host/browser",
         "index": "apps/host/src/index.html",
         "baseHref": "/",
         "main": "apps/host/src/main.ts",
@@ -47,6 +47,72 @@
       }
     },
     "serve": {
+      "executor": "@nx/webpack:ssr-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "browserTarget": "host:build:development",
+        "serverTarget": "host:serve-server:development",
+        "port": 4200,
+        "browserTargetOptions": {
+          "watch": true
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "browserTarget": "host:build:production",
+          "serverTarget": "host:serve-server:production"
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/react:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "host:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "host:serve:development"
+        },
+        "production": {
+          "serveTarget": "host:serve:production"
+        }
+      }
+    },
+    "server": {
+      "dependsOn": ["build"],
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "main": "apps/host/server.ts",
+        "outputPath": "dist/apps/host/server",
+        "outputFileName": "server.js",
+        "tsConfig": "apps/host/tsconfig.server.json",
+        "compiler": "babel",
+        "externalDependencies": "all",
+        "outputHashing": "none",
+        "webpackConfig": "apps/host/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "optimization": false,
+          "sourceMap": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/host/src/environments/environment.ts",
+              "with": "apps/host/src/environments/environment.prod.ts"
+            }
+          ],
+          "sourceMap": false
+        }
+      }
+    },
+    "serve-browser": {
       "executor": "@nx/react:module-federation-dev-server",
       "defaultConfiguration": "development",
       "options": {
@@ -64,18 +130,19 @@
         }
       }
     },
-    "serve-static": {
-      "executor": "@nx/react:module-federation-static-server",
-      "defaultConfiguration": "production",
+    "serve-server": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
       "options": {
-        "serveTarget": "host:serve"
+        "buildTarget": "host:server:development",
+        "buildTargetOptions": {
+          "watch": true
+        }
       },
       "configurations": {
-        "development": {
-          "serveTarget": "host:serve:development"
-        },
+        "development": {},
         "production": {
-          "serveTarget": "host:serve:production"
+          "buildTarget": "host:server:production"
         }
       }
     }

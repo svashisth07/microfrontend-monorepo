@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { importRemote } from '@module-federation/utilities';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import useSyncAppRouter from '../hooks/useSyncAppRouter';
-
+import { ErrorBoundary } from 'react-error-boundary';
 const Racers = React.lazy(() => import('racers/Module'));
 
 const Dashboard = React.lazy(() => import('dashboard/Module'));
@@ -40,28 +40,47 @@ const ShopRouterHandler = () => {
 
 export function App() {
   // @ts-ignore
-  // console.log(__webpack_require__.S);
+  console.log(__webpack_require__.S);
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/racers" element={<Racers />} />
+    <div>
+      <h1>Host</h1>
+      <ul>
+        <li>
+          <Link to="/">Dashboard</Link>
+        </li>
+        <li>
+          <Link to="/racers">Racers</Link>
+        </li>
+        <li>
+          <Link to="/schedules">Schedules</Link>
+        </li>
+        <li>
+          <Link to="/shop">Shop</Link>
+        </li>
+        <li>
+          <Link to="/cart">Cart</Link>
+        </li>
+      </ul>
+      <ErrorBoundary fallback={<>Error</>}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/racers" element={<Racers />} />
 
-      <Route path="/schedules" element={<Schedules />} />
+          <Route path="/schedules" element={<Schedules />} />
 
-      <Route
-        path="/shop/*"
-        element={<ShopRouterHandler />}
-      />
+          <Route path="/shop/*" element={<ShopRouterHandler />} />
 
-      <Route
-        path="/cart"
-        element={
-          <React.Suspense fallback={<>Loading Cart...</>}>
-            <Cart />
-          </React.Suspense>
-        }
-      />
-    </Routes>
+          <Route
+            path="/cart"
+            element={
+              <React.Suspense fallback={<>Loading Cart...</>}>
+                <Cart />
+              </React.Suspense>
+            }
+          />
+        </Routes>
+      </ErrorBoundary>
+    </div>
   );
 }
 
