@@ -1,0 +1,83 @@
+{
+  "name": "racers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/racers/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/racers",
+        "index": "apps/racers/src/index.html",
+        "baseHref": "/",
+        "main": "apps/racers/src/main.ts",
+        "tsConfig": "apps/racers/tsconfig.app.json",
+        "assets": ["apps/racers/src/favicon.ico", "apps/racers/src/assets"],
+        "styles": ["apps/racers/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "apps/racers/webpack.config.ts",
+        "postcssConfig": "apps/racers/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/racers/src/environments/environment.ts",
+              "with": "apps/racers/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/racers/webpack.config.prod.ts"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "racers:build",
+        "hmr": true,
+        "port": 4205
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "racers:build:development"
+        },
+        "production": {
+          "buildTarget": "racers:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/react:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "racers:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "racers:serve:development"
+        },
+        "production": {
+          "serveTarget": "racers:serve:production"
+        }
+      }
+    }
+  }
+}

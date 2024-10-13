@@ -14,7 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "cart/Module": ["apps/cart/src/remote-entry.ts"],
+      "dashboard/Module": ["apps/dashboard/src/remote-entry.ts"],
+      "racers/Module": ["apps/racers/src/remote-entry.ts"],
+      "schedules/Module": ["apps/schedules/src/remote-entry.ts"],
+      "shop/Module": ["apps/shop/src/remote-entry.ts"],
+      "racers/Top5Racer": ["apps/racers/src/components/Top5Racer.tsx"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -1,0 +1,86 @@
+{
+  "name": "schedules",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/schedules/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/schedules",
+        "index": "apps/schedules/src/index.html",
+        "baseHref": "/",
+        "main": "apps/schedules/src/main.ts",
+        "tsConfig": "apps/schedules/tsconfig.app.json",
+        "assets": [
+          "apps/schedules/src/favicon.ico",
+          "apps/schedules/src/assets"
+        ],
+        "styles": ["apps/schedules/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "apps/schedules/webpack.config.ts",
+        "postcssConfig": "apps/schedules/postcss.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/schedules/src/environments/environment.ts",
+              "with": "apps/schedules/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/schedules/webpack.config.prod.ts"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "schedules:build",
+        "hmr": true,
+        "port": 4202
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "schedules:build:development"
+        },
+        "production": {
+          "buildTarget": "schedules:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/react:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "schedules:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "schedules:serve:development"
+        },
+        "production": {
+          "serveTarget": "schedules:serve:production"
+        }
+      }
+    }
+  }
+}
